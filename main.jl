@@ -1,3 +1,4 @@
+using Flux
 SIGHT_DIST = 6.0
 
 struct Point
@@ -14,9 +15,9 @@ mutable struct Car
   position::Point
   velo::Float64
   angle::Float64
-  brain::Vector{Float64}
+  brain::Flux.Chain
   function Car(position::Point, velo::Float64, angle::Float64)
-    brain = [rand() for _ in 1:6]
+    brain = Chain(Dense(6, 6, relu; init=Flux.kaiming_uniform), Dense(6, 2))
     return new(position, velo, angle, brain)
   end
 end
@@ -83,7 +84,8 @@ function get_endpoint(origin::Point, angle::Float64, length::Float64)
 ve!(car::Car)
   end
 
-function mocar.position = get_endpoint(car.position, car.angle, car.velo)
+function move!(car::Car)
+  car.position = get_endpoint(car.position, car.angle, car.velo)
 end
 
 
@@ -142,4 +144,15 @@ function breed(parent1::Car, parent2::Car)
   return child
 end
 
+function run(; iterations::Int = 10)
+  car = Car(Point(0.0, 0.0), 0.0, 0.0)
+  world = Map([], [])
+  for _ in 1:iterations
+    println(car.position)
+    diff_angle, diff_velo = car.brain(sight(car, world))
+    accelerate(car, diff_velo)
+    turn(car, diff_angle)
+    move!(car)
+  end
+end
 
