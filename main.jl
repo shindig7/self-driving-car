@@ -80,10 +80,10 @@ function get_endpoint(origin::Point, angle::Float64, length::Float64)
   pos_y = origin.y + (sind(angle) * length)
   pos_x = origin.x + (cosd(angle) * length)
   return Point(pos_x, pos_y)
-end
+ve!(car::Car)
+  end
 
-function move!(car::Car)
-  car.position = get_endpoint(car.position, car.angle, car.velo)
+function mocar.position = get_endpoint(car.position, car.angle, car.velo)
 end
 
 
@@ -141,4 +141,5 @@ function breed(parent1::Car, parent2::Car)
   end
   return child
 end
+
 
